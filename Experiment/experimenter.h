@@ -18,8 +18,8 @@
 #include "PCWork/descriptormakerbycpu.h"
 #include "ShareExpm/expm_common.h"
 #include "convertertopcl.h"
-#include "fpfhmaker.h"
-#include "spinimagemaker.h"
+#include "Features/pclcpufeatures.h"
+#include "Features/pclgpufeatures.h"
 
 //#define COMPARE_DESC_CPU
 
@@ -31,18 +31,18 @@ public:
     void Work(const QImage& srcColorImg, const QImage& srcDepthImg, const vecAnnot& annots, SharedData* shdDat);
     void MarkNeighborsOnImage(QImage& srcimg, QPoint pixel);
     void DrawOnlyNeighbors(SharedData& shdDat, QPoint pixel);
-    void CheckDataValidity(const cl_float4* pointCloud, const cl_float4* normalCloud
-                           , const cl_float4* descriptors, const cl_float4* descriptorsCpu=nullptr);
+    void CheckDataValidity(const cl_float4* pointCloud, const cl_float4* normalCloud);
 
 private:
     void CreateNormalAndDescriptor(SharedData* shdDat);
     cl_uchar* CreateNullityMap(SharedData* shdDat);
-    void ComputePCLDescriptors(SharedData* shdDat);
+    void ComputePCL_CPU_descriptors(SharedData* shdDat);
+    void ComputePCL_GPU_descriptors(SharedData* shdDat);
 
     QElapsedTimer       eltimer;
     RadiusSearch        neibSearcher;
     NormalMaker         normalMaker;
-    DescriptorMaker     descriptorMaker;
+    DescriptorMaker     curvDescriptor_gpu;
     DescriptorMakerByCpu descriptorMakerCpu;
 
     cl_int* neighborIndices;
@@ -50,8 +50,18 @@ private:
     QImage colorImg;
 
     ConverterToPcl pclConverter;
-    FpfhMaker fpfhmaker;
-    SpinImageMaker spinImageMaker;
+
+    CpuFeature::FpfhEstimator fpfh_cpu;
+    CpuFeature::PrincipleCurvatureEstimator prinCurv_cpu;
+    CpuFeature::SpinImageEstimator spinImage_cpu;
+    CpuFeature::ShotEstimator shot_cpu;
+    CpuFeature::NarfEstimator narf_cpu;
+
+    GpuFeature::FpfhEstimator fpfh_gpu;
+    GpuFeature::PrincipleCurvatureEstimator prinCurv_gpu;
+    GpuFeature::SpinImageEstimator spinImage_gpu;
+
+//    CpuFeature::FeatureWithNormals<pcl::FPFHEstimation, pcl::FPFHSignature33> fpfhEstimator;
 
     friend class PCAppsExperiment;
 };

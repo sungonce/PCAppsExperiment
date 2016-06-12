@@ -35,23 +35,17 @@ LIBS += $$PCL_LIB
 #        -lpcl_gpu_octree -lpcl_octree -lpcl_kdtree
 
 SOURCES += main.cpp\
-    Experiment/experimenter.cpp \
     pcappsexperiment.cpp \
-    Experiment/fpfhmaker.cpp \
-    Experiment/spinimagemaker.cpp \
-    Experiment/convertertopcl.cpp \
-    Experiment/principlecurvaturemaker.cpp \
-    Experiment/featurebase.cpp
+    Experiment/experimenter.cpp \
+    Experiment/convertertopcl.cpp
 
 HEADERS  += \
-    Experiment/experimenter.h \
     pcappsexperiment.h \
-    ShareExpm/expm_common.h \
-    Experiment/fpfhmaker.h \
-    Experiment/spinimagemaker.h \
+    Experiment/experimenter.h \
     Experiment/convertertopcl.h \
-    Experiment/principlecurvaturemaker.h \
-    Experiment/featurebase.h
+    ShareExpm/expm_common.h \
+    Features/pclcpufeatures.h \
+    Features/pclgpufeatures.h
 
 FORMS    += \
     pcappsexperiment.ui
