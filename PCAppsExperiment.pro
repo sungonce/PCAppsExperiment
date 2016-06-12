@@ -13,16 +13,49 @@ TEMPLATE = app
 
 include(../PCApps/PCApps-share.pri)
 
+# import boost
+INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/boost-1.61/include
+LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/boost-1.61/lib \
+        -lboost_thread -lboost_filesystem -lboost_iostreams -lboost_system -lboost_chrono
+
+# import flann
+INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/flann-1.8.4/include
+LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/flann-1.8.4/lib
+
+# import pcl
+INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/include/pcl-1.8
+LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib
+PCL_LIB_FULL = $$system("find /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib -name '*.so'")
+for(eachlib, PCL_LIB_FULL):PCL_LIB_SO+=$$replace(eachlib, /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib/libpcl, -lpcl)
+for(eachlib, PCL_LIB_SO):PCL_LIB+=$$replace(eachlib, .so, )
+LIBS += $$PCL_LIB
+#message($$PCL_LIB)
+#        -lpcl_common -lpcl_filters -lpcl_io  \
+#        -lpcl_features -lpcl_cuda_features -lpcl_gpu_features   \
+#        -lpcl_gpu_octree -lpcl_octree -lpcl_kdtree
+
 SOURCES += main.cpp\
     Experiment/experimenter.cpp \
-    pcappsexperiment.cpp
+    pcappsexperiment.cpp \
+    Experiment/fpfhmaker.cpp \
+    Experiment/spinimagemaker.cpp \
+    Experiment/convertertopcl.cpp \
+    Experiment/principlecurvaturemaker.cpp \
+    Experiment/featurebase.cpp
 
 HEADERS  += \
     Experiment/experimenter.h \
     pcappsexperiment.h \
-    ShareExpm/expm_common.h
+    ShareExpm/expm_common.h \
+    Experiment/fpfhmaker.h \
+    Experiment/spinimagemaker.h \
+    Experiment/convertertopcl.h \
+    Experiment/principlecurvaturemaker.h \
+    Experiment/featurebase.h
 
 FORMS    += \
     pcappsexperiment.ui
 
 DEFINES += PCAppsExperiment_PATH=\\\"$$PWD\\\"
+
+

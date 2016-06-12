@@ -19,6 +19,8 @@ void Experimenter::Work(const QImage& srcColorImg, const QImage& srcDepthImg, co
     shdDat->SetPointCloud(pointCloud);
 
     CreateNormalAndDescriptor(shdDat);
+
+    ComputePCLDescriptors(shdDat);
 }
 
 void Experimenter::CreateNormalAndDescriptor(SharedData* shdDat)
@@ -43,21 +45,18 @@ void Experimenter::CreateNormalAndDescriptor(SharedData* shdDat)
                                       , neibSearcher.memNeighborIndices, neibSearcher.memNumNeighbors, NEIGHBORS_PER_POINT);
     const DescType* descriptors = descriptorMaker.GetDescriptor();
     shdDat->SetDescriptors(descriptors);
-    qDebug() << "ComputeDescriptor took" << eltimer.nsecsElapsed()/1000 << "us";
+    qDebug() << "CurvatureDescriptorBy GPU took" << eltimer.nsecsElapsed()/1000 << "us";
 
     const DescType* descriptorsCpu = nullptr;
 #ifdef COMPARE_DESC_CPU
     eltimer.start();
     descriptorMakerCpu.ComputeDescriptors(pointCloud, normalCloud, neighborIndices, numNeighbors, NEIGHBORS_PER_POINT);
     descriptorsCpu = descriptorMakerCpu.GetDescriptors();
-    qDebug() << "ComputeDescriptorCpu took" << eltimer.nsecsElapsed()/1000 << "us";
+    qDebug() << "CurvatureDescriptorBy CPU took" << eltimer.nsecsElapsed()/1000 << "us";
 #endif
 
-    eltimer.start();
     const cl_uchar* nullityMap = CreateNullityMap(shdDat);
     shdDat->SetNullityMap(nullityMap);
-    qDebug() << "CreateNullityMap took" << eltimer.nsecsElapsed()/1000 << "us";
-
     CheckDataValidity(pointCloud, normalCloud, descriptors, descriptorsCpu);
 }
 
@@ -100,4 +99,30 @@ cl_uchar* Experimenter::CreateNullityMap(SharedData* shdDat)
             nullityMap[i] = NullID::DescriptorNull;
     }
     return nullityMap;
+}
+
+void Experimenter::ComputePCLDescriptors(SharedData* shdDat)
+{
+    eltimer.start();
+    pclConverter.ConvertToPCLFormat(shdDat);
+    pclConverter.ConvertToPCLVector(shdDat);
+    qDebug() << "ConvertToPCLFormat took" << eltimer.nsecsElapsed()/1000 << "us";
+
+    eltimer.start();
+    fpfhmaker.ComputeFpfhByCPU(pclConverter.pclPointCloud, pclConverter.pclNormalCloud);
+    qDebug() << "ComputeFpfhBy CPU took" << eltimer.nsecsElapsed()/1000 << "us";
+
+    eltimer.start();
+    fpfhmaker.ComputeFpfhByGPU(pclConverter.pclPoints, pclConverter.pclNormals);
+    qDebug() << "ComputeFpfhBy GPU took" << eltimer.nsecsElapsed()/1000 << "us";
+
+    eltimer.start();
+    spinImageMaker.ComputeSpinImageByCPU(pclConverter.pclPointCloud, pclConverter.pclNormalCloud);
+    qDebug() << "ComputeSpinImageBy CPU took" << eltimer.nsecsElapsed()/1000 << "us";
+
+//    eltimer.start();
+//    spinImageMaker.ComputeSpinImageByGPU(pclConverter.pclPoints, pclConverter.pclNormals);
+//    qDebug() << "ComputeSpinImageBy GPU took" << eltimer.nsecsElapsed()/1000 << "us";
+
+
 }
