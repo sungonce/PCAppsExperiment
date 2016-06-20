@@ -29,12 +29,12 @@ public:
     void EstimateFpfh(VoxelCloud::Ptr points, NormalCloud::Ptr normals)
     {
         descriptors->clear();
-        pcl::search::KdTree<VoxelType>::Ptr kdtree(new pcl::search::KdTree<VoxelType>);
+        pcl::search::KdTree<VoxelType>::Ptr tree(new pcl::search::KdTree<VoxelType>);
         // FPFH estimation object.
         pcl::FPFHEstimation<VoxelType, NormalType, pcl::FPFHSignature33> fpfh;
         fpfh.setInputCloud(points);
         fpfh.setInputNormals(normals);
-        fpfh.setSearchMethod(kdtree);
+        fpfh.setSearchMethod(tree);
         // Search radius, to look for neighbors. Note: the value given here has to be
         // larger than the radius used to estimate the normals.
         fpfh.setRadiusSearch(0.05f);
@@ -63,12 +63,12 @@ public:
     void EstimateSpinImage(VoxelCloud::Ptr points, NormalCloud::Ptr normals)
     {
         descriptors->clear();
-        pcl::search::KdTree<VoxelType>::Ptr kdtree(new pcl::search::KdTree<VoxelType>);
+        pcl::search::KdTree<VoxelType>::Ptr tree(new pcl::search::KdTree<VoxelType>);
         // FPFH estimation object.
         pcl::SpinImageEstimation<VoxelType, NormalType, SpinImage> spinImage;
         spinImage.setInputCloud(points);
         spinImage.setInputNormals(normals);
-        spinImage.setSearchMethod(kdtree);
+        spinImage.setSearchMethod(tree);
         spinImage.useNormalsAsRotationAxis();
         // Search radius, to look for neighbors. Note: the value given here has to be
         // larger than the radius used to estimate the normals.
@@ -120,12 +120,12 @@ public:
     void EstimateShot(VoxelCloud::Ptr points, NormalCloud::Ptr normals)
     {
         descriptors->clear();
-        pcl::search::KdTree<VoxelType>::Ptr kdtree(new pcl::search::KdTree<VoxelType>);
+        pcl::search::KdTree<VoxelType>::Ptr tree(new pcl::search::KdTree<VoxelType>);
         // FPFH estimation object.
         pcl::SHOTEstimation<VoxelType, NormalType, pcl::SHOT352> shot;
         shot.setInputCloud(points);
         shot.setInputNormals(normals);
-        shot.setSearchMethod(kdtree);
+        shot.setSearchMethod(tree);
         // Search radius, to look for neighbors. Note: the value given here has to be
         // larger than the radius used to estimate the normals.
         shot.setRadiusSearch(0.05f);

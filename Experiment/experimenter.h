@@ -21,7 +21,7 @@
 #include "Features/pclcpufeatures.h"
 #include "Features/pclgpufeatures.h"
 
-//#define COMPARE_DESC_CPU
+#define COMPARE_DESC_CPU
 
 class Experimenter
 {

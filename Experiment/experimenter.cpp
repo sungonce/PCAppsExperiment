@@ -86,9 +86,9 @@ void Experimenter::ComputePCL_CPU_descriptors(SharedData* shdDat)
 
 #ifdef COMPARE_DESC_CPU
     eltimer.start();
-    descriptorMakerCpu.ComputeDescriptors(pointCloud, normalCloud, neighborIndices, numNeighbors, NEIGHBORS_PER_POINT);
+    descriptorMakerCpu.ComputeDescriptors(shdDat->ConstPointCloud(), shdDat->ConstNormalCloud(), neighborIndices, numNeighbors, NEIGHBORS_PER_POINT);
     const DescType* descriptorsCpu = descriptorMakerCpu.GetDescriptors();
-    qDebug() << "CurvatureDescriptorBy CPU took" << eltimer.nsecsElapsed()/1000 << "us";
+    qDebug() << "QuadraticCurvature CPU took" << eltimer.nsecsElapsed()/1000 << "us";
 #endif
 
     eltimer.start();
@@ -120,7 +120,7 @@ void Experimenter::ComputePCL_GPU_descriptors(SharedData* shdDat)
     eltimer.start();
     curvDescriptor_gpu.ComputeDescriptor(neibSearcher.memPoints, normalMaker.memNormals
                                       , neibSearcher.memNeighborIndices, neibSearcher.memNumNeighbors, NEIGHBORS_PER_POINT);
-    qDebug() << "CurvatureDescriptorBy GPU took" << eltimer.nsecsElapsed()/1000 << "us";
+    qDebug() << "QuadraticCurvature GPU took" << eltimer.nsecsElapsed()/1000 << "us";
 
     eltimer.start();
     fpfh_gpu.EstimateFpfh(pclConverter.pclPoints, pclConverter.pclNormals);
