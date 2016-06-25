@@ -1,5 +1,5 @@
 # PCAppsExperiment
-This repository is add-on for the PointCloudApps repository
+This repository is an add-on for the PointCloudApps repository
 It compares performances of shape descriptors.
 ### Dependencies
 > - OpenCV 3.1.
