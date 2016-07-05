@@ -14,19 +14,19 @@ TEMPLATE = app
 include(../PCApps/PCApps-share.pri)
 
 # import boost
-INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/boost-1.61/include
+INCLUDEPATH += $$LIBRARY_ROOT/boost-1.61/include
 LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/boost-1.61/lib \
         -lboost_thread -lboost_filesystem -lboost_iostreams -lboost_system -lboost_chrono
 
 # import flann
-INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/flann-1.8.4/include
+INCLUDEPATH += $$LIBRARY_ROOT/flann-1.8.4/include
 LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/flann-1.8.4/lib
 
 # import pcl
-INCLUDEPATH += /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/include/pcl-1.8
+INCLUDEPATH += $$LIBRARY_ROOT/pcl-1.8/include/pcl-1.8
 LIBS += -L/home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib
-PCL_LIB_FULL = $$system("find /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib -name '*.so'")
-for(eachlib, PCL_LIB_FULL):PCL_LIB_SO+=$$replace(eachlib, /home/hyukdoo/MyLibs/LibsInstalled/pcl-1.8/lib/libpcl, -lpcl)
+PCL_LIB_FULL = $$system("find $$LIBRARY_ROOT/pcl-1.8/lib -name '*.so'")
+for(eachlib, PCL_LIB_FULL):PCL_LIB_SO+=$$replace(eachlib, $$LIBRARY_ROOT/pcl-1.8/lib/libpcl, -lpcl)
 for(eachlib, PCL_LIB_SO):PCL_LIB+=$$replace(eachlib, .so, )
 LIBS += $$PCL_LIB
 #message($$PCL_LIB)
